@@ -1,0 +1,40 @@
+{
+  "name": "cpu-memory-monitor",
+  "version": "1.0.0",
+  "description": "CPU & Memory Monitor, auto dump.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nswbmw/cpu-memory-monitor.git"
+  },
+  "keywords": [
+    "cpu",
+    "memory",
+    "monitor"
+  ],
+  "author": "nswbmw",
+  "license": "MIT",
+  "engine": {
+    "node": ">6"
+  },
+  "bugs": {
+    "url": "https://github.com/nswbmw/cpu-memory-monitor/issues"
+  },
+  "homepage": "https://github.com/nswbmw/cpu-memory-monitor#readme",
+  "dependencies": {
+    "bytes": "2.5.0",
+    "heapdump": "0.3.9",
+    "limiter": "1.1.2",
+    "memwatch-next": "0.3.0",
+    "pidusage": "~1.1.5",
+    "v8-profiler": "~5.7.0"
+  },
+  "devDependencies": {
+    "eslint": "3.19.0",
+    "eslint-config-airbnb-base": "11.2.0",
+    "eslint-plugin-import": "2.7.0"
+  }
+}
