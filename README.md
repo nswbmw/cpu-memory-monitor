@@ -2,6 +2,12 @@
 
 CPU & Memory Monitor, auto dump.
 
+### Install
+
+```
+$ npm i cpu-memory-monitor --save
+```
+
 ### Usage
 
 ```
