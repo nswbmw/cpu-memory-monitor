@@ -42,13 +42,12 @@ function dumpMemory(memProfileDir, isLeak = false) {
   processing.memory = true;
   const filepath = genProfilePath(memProfileDir, isLeak ? 'leak-memory' : 'memory', 'heapsnapshot');
   heapdump.writeSnapshot(filepath, (error, filename) => {
+    processing.memory = false;
     if (error) {
-      processing.memory = false;
       console.error(`heapsnapshot dump error: ${error.message}`);
       console.error(error.stack);
       return;
     }
-    processing.memory = false;
     console.log(`heapsnapshot dump success: ${filename}`);
   });
 }
@@ -125,7 +124,7 @@ module.exports = function cpuMemoryMonitor(options = {}) {
     }, memInterval);
 
     memwatch.on('leak', (info) => {
-      console.warn('memory may leak: %j', info);
+      console.warn('memory leak: %j', info);
       dumpMemory(memProfileDir, true);
     });
   }
