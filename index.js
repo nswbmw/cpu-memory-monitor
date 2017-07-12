@@ -13,8 +13,8 @@ const processing = {
   memory: false,
 };
 
-function genProfilePath(profileDir, type) {
-  return path.join(profileDir, `${type}-${process.pid}-${Date.now()}.${type}`);
+function genProfilePath(profileDir, prefix, suffix) {
+  return path.join(profileDir, `${prefix}-${process.pid}-${Date.now()}.${suffix}`);
 }
 
 function dumpCpu(cpuProfileDir, cpuDuration) {
@@ -22,7 +22,7 @@ function dumpCpu(cpuProfileDir, cpuDuration) {
   processing.cpu = true;
   setTimeout(() => {
     const profile = profiler.stopProfiling();
-    const filepath = genProfilePath(cpuProfileDir, 'cpuprofile');
+    const filepath = genProfilePath(cpuProfileDir, 'cpu', 'cpuprofile');
     profile.export()
       .pipe(fs.createWriteStream(filepath))
       .on('finish', () => {
@@ -38,9 +38,10 @@ function dumpCpu(cpuProfileDir, cpuDuration) {
   }, cpuDuration);
 }
 
-function dumpMemory(memProfileDir) {
+function dumpMemory(memProfileDir, isLeak = false) {
   processing.memory = true;
-  heapdump.writeSnapshot(genProfilePath(memProfileDir, 'heapsnapshot'), (error, filename) => {
+  const filepath = genProfilePath(memProfileDir, isLeak ? 'leak-memory' : 'memory', 'heapsnapshot');
+  heapdump.writeSnapshot(filepath, (error, filename) => {
     if (error) {
       processing.memory = false;
       console.error(`heapsnapshot dump error: ${error.message}`);
@@ -125,16 +126,7 @@ module.exports = function cpuMemoryMonitor(options = {}) {
 
     memwatch.on('leak', (info) => {
       console.warn('memory may leak: %j', info);
-      cpuLimiter.removeTokens(1, (limiterErr, remaining) => {
-        if (limiterErr) {
-          console.error(`limiterErr: ${limiterErr.message}`);
-          console.error(limiterErr.stack);
-          return;
-        }
-        if (remaining > -1) {
-          dumpMemory(memProfileDir);
-        }
-      });
+      dumpMemory(memProfileDir, true);
     });
   }
 };

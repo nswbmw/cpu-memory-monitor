@@ -32,6 +32,14 @@ require('cpu-memory-monitor')({
 })
 ```
 
+will generate:
+
+```
+cpu-${process.pid}-${Date.now()}.cpuprofile
+memory-${process.pid}-${Date.now()}.heapsnapshot
+leak-memory-${process.pid}-${Date.now()}.heapsnapshot
+```
+
 ### Options
 
 - cpu`{Object}`
