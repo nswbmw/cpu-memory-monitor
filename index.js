@@ -13,6 +13,11 @@ const processing = {
   memory: false,
 };
 
+const counter = {
+  cpu: 0,
+  memory: 0,
+};
+
 function genProfilePath(profileDir, prefix, suffix) {
   return path.join(profileDir, `${prefix}-${process.pid}-${Date.now()}.${suffix}`);
 }
@@ -58,6 +63,7 @@ module.exports = function cpuMemoryMonitor(options = {}) {
   const cpuDuration = cpuOptions.duration || 300000;
   const cpuThreshold = cpuOptions.threshold || 90;
   const cpuProfileDir = cpuOptions.profileDir || process.cwd();
+  const cpuCounter = cpuOptions.counter || 1;
   const cpuLimiterOpt = cpuOptions.limiter || [];
   const cpuLimiter = new RateLimiter(cpuLimiterOpt[0] || 3, cpuLimiterOpt[1] || 'hour', true);
 
@@ -65,6 +71,7 @@ module.exports = function cpuMemoryMonitor(options = {}) {
   const memInterval = memOptions.interval || 1000;
   const memThreshold = bytes.parse(memOptions.threshold || '1.2gb');
   const memProfileDir = memOptions.profileDir || process.cwd();
+  const memCounter = memOptions.counter || 1;
   const memLimiterOpt = memOptions.limiter || [];
   const memLimiter = new RateLimiter(memLimiterOpt[0] || 3, memLimiterOpt[1] || 'hour', true);
 
@@ -81,16 +88,22 @@ module.exports = function cpuMemoryMonitor(options = {}) {
           return;
         }
         if (stat.cpu > cpuThreshold) {
-          memLimiter.removeTokens(1, (limiterErr, remaining) => {
-            if (limiterErr) {
-              console.error(`limiterErr: ${limiterErr.message}`);
-              console.error(limiterErr.stack);
-              return;
-            }
-            if (remaining > -1) {
-              dumpCpu(cpuProfileDir, cpuDuration);
-            }
-          });
+          counter.cpu += 1;
+          if (counter.cpu >= cpuCounter) {
+            memLimiter.removeTokens(1, (limiterErr, remaining) => {
+              if (limiterErr) {
+                console.error(`limiterErr: ${limiterErr.message}`);
+                console.error(limiterErr.stack);
+                return;
+              }
+              if (remaining > -1) {
+                dumpCpu(cpuProfileDir, cpuDuration);
+                counter.cpu = 0;
+              }
+            });
+          } else {
+            counter.cpu = 0;
+          }
         }
       });
     }, cpuInterval);
@@ -109,16 +122,22 @@ module.exports = function cpuMemoryMonitor(options = {}) {
           return;
         }
         if (stat.memory > memThreshold) {
-          cpuLimiter.removeTokens(1, (limiterErr, remaining) => {
-            if (limiterErr) {
-              console.error(`limiterErr: ${limiterErr.message}`);
-              console.error(limiterErr.stack);
-              return;
-            }
-            if (remaining > -1) {
-              dumpMemory(memProfileDir);
-            }
-          });
+          counter.memory += 1;
+          if (counter.memory >= memCounter) {
+            cpuLimiter.removeTokens(1, (limiterErr, remaining) => {
+              if (limiterErr) {
+                console.error(`limiterErr: ${limiterErr.message}`);
+                console.error(limiterErr.stack);
+                return;
+              }
+              if (remaining > -1) {
+                dumpMemory(memProfileDir);
+                counter.memory = 0;
+              }
+            });
+          } else {
+            counter.memory = 0;
+          }
         }
       });
     }, memInterval);
