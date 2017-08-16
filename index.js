@@ -60,7 +60,7 @@ function dumpMemory(memProfileDir, isLeak = false) {
 module.exports = function cpuMemoryMonitor(options = {}) {
   const cpuOptions = options.cpu || {};
   const cpuInterval = cpuOptions.interval || 1000;
-  const cpuDuration = cpuOptions.duration || 300000;
+  const cpuDuration = cpuOptions.duration || 30000;
   const cpuThreshold = cpuOptions.threshold || 90;
   const cpuProfileDir = cpuOptions.profileDir || process.cwd();
   const cpuCounter = cpuOptions.counter || 1;

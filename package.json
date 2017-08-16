@@ -1,6 +1,6 @@
 {
   "name": "cpu-memory-monitor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CPU & Memory Monitor, auto dump.",
   "main": "index.js",
   "scripts": {
