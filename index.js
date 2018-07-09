@@ -101,9 +101,9 @@ module.exports = function cpuMemoryMonitor (options = {}) {
                 counter.cpu = 0
               }
             })
-          } else {
-            counter.cpu = 0
           }
+        } else {
+          counter.cpu = 0
         }
       })
     }, cpuInterval)
@@ -135,9 +135,9 @@ module.exports = function cpuMemoryMonitor (options = {}) {
                 counter.memory = 0
               }
             })
-          } else {
-            counter.memory = 0
           }
+        } else {
+          counter.memory = 0
         }
       })
     }, memInterval)

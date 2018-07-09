@@ -79,7 +79,7 @@ see [heapdump](https://github.com/bnoordhuis/node-heapdump).
   - interval`{Number}`: interval(ms) for check Memory usage, default: `1000`
   - threshold`{String}:` process max Memory usage, default: `1.2gb`, see [bytes](https://github.com/visionmedia/bytes.js)
   - profileDir`{String}`: directory for save heapsnapshot, default: `process.cwd()`
-  - counter`{Number}:` the number of CPU > threshold, then dump, default: `1`
+  - counter`{Number}:` the number of Memory > threshold, then dump, default: `1`
   - limiter`{Array}`: options pass to [limiter](https://github.com/jhurliman/node-rate-limiter), default: `[3, 'hour']`
 
 **NB**: If omit cpu/memory option, cpu-momery-monitor will not monitor it.
