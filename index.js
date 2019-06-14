@@ -90,7 +90,7 @@ module.exports = function cpuMemoryMonitor (options = {}) {
         if (stat.cpu > cpuThreshold) {
           counter.cpu += 1
           if (counter.cpu >= cpuCounter) {
-            memLimiter.removeTokens(1, (limiterErr, remaining) => {
+            cpuLimiter.removeTokens(1, (limiterErr, remaining) => {
               if (limiterErr) {
                 console.error(`limiterErr: ${limiterErr.message}`)
                 console.error(limiterErr.stack)
@@ -124,7 +124,7 @@ module.exports = function cpuMemoryMonitor (options = {}) {
         if (stat.memory > memThreshold) {
           counter.memory += 1
           if (counter.memory >= memCounter) {
-            cpuLimiter.removeTokens(1, (limiterErr, remaining) => {
+            memLimiter.removeTokens(1, (limiterErr, remaining) => {
               if (limiterErr) {
                 console.error(`limiterErr: ${limiterErr.message}`)
                 console.error(limiterErr.stack)
